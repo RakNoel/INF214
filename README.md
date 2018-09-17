@@ -1,8 +1,7 @@
 # INF214
 Repo for the assignments in INF214
 
-### Task 1:
-#### Getting stuff to work:
+## Getting stuff to work:
 It was a real hassle getting everything up and running. I'm using Archlinux so setting upp an IDE i could not
 really be bothered with VisualStudio as it is HUGE, slow and overpowered. But I did not wish to use Vim and gcc either.
 
@@ -14,7 +13,7 @@ Now getting C++ to work was not an easy task. Getting everything given for this 
 get me started. I have never used this language ever, and apparently this offers a LOT of freedom for the developer
 but with NO SUPPORT what so ever. Apparently this is top down compiled, so you cannot have the main method at the start.
 
-#### First run:
+### First run:
 You can apparently freely mess arround with pointers, deconstructors and god knows what. I have NO clue what all this
 code does, and googeling gives me a headace. Anyways continuing on. After much back and fourth, I finally made it:
 ```
@@ -24,7 +23,7 @@ code does, and googeling gives me a headace. Anyways continuing on. After much b
 Process finished with exit code 0
 ``` 
 
-#### Unsafe concurrency test:
+### Unsafe concurrency test:
 And so apparently CMake does not really like concurrency. After a bit of a hassle I was able to upgrade to C++ v.17 and
 add a small line to the 'CMakeLists.txt' file.
 ```set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")```
@@ -55,6 +54,10 @@ Elements in queue: 1993
 
 Process finished with exit code 139 (interrupted by signal 11: SIGSEGV)
 ```
+Which is obvius that it could as we did not make our queue thread safe, and still used it concurrent.
 
-### Task 2:
-Beginning
+## Tasks:
+### Task 0:
+Ii'l try my very best
+
+### Task 1:
