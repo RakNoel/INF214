@@ -29,7 +29,7 @@ And so apparently CMake does not really like concurrency. After a bit of a hassl
 add a small line to the 'CMakeLists.txt' file.
 ```set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")```
 
-And then we actually get a result from the run:
+And then we actually get a result from the run, but only properly sometimes:
 ```
 /home/raknoel/CLionProjects/INF214/src/cmake-build-debug/INF214
    Elements enqueued: 2000
@@ -43,6 +43,17 @@ And then we actually get a result from the run:
    Elements in queue: 0
    
    Process finished with exit code 0
+```
+
+Then sometimes it crashes:
+```
+/home/raknoel/CLionProjects/INF214/src/cmake-build-debug/INF214
+Elements enqueued: 2000
+Queue size: 1997
+Elements in queue: 1993
+---------------
+
+Process finished with exit code 139 (interrupted by signal 11: SIGSEGV)
 ```
 
 ### Task 2:
