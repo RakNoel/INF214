@@ -24,5 +24,26 @@ code does, and googeling gives me a headace. Anyways continuing on. After much b
 Process finished with exit code 0
 ``` 
 
+#### Unsafe concurrency test:
+And so apparently CMake does not really like concurrency. After a bit of a hassle I was able to upgrade to C++ v.17 and
+add a small line to the 'CMakeLists.txt' file.
+```set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")```
+
+And then we actually get a result from the run:
+```
+/home/raknoel/CLionProjects/INF214/src/cmake-build-debug/INF214
+   Elements enqueued: 2000
+   Queue size: 2000
+   Elements in queue: 2000
+   ---------------
+   Elements enqueued: 1000
+   Elements dequeued: 1000
+   Successful dequeue count: 1000
+   Queue size: 0
+   Elements in queue: 0
+   
+   Process finished with exit code 0
+```
+
 ### Task 2:
 Beginning
