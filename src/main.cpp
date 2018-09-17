@@ -3,6 +3,7 @@
 //
 
 #include "alang.hpp"
+#include <cassert>
 
 using namespace std;
 
