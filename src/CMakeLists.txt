@@ -4,4 +4,5 @@ project(INF214)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")
 
-add_executable(INF214 main.cpp)
+add_executable(lockingQueue locking_queue.cpp)
+add_executable(atomicQueue atomic_queue.cpp)
