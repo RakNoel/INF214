@@ -10,17 +10,16 @@ using namespace std;
 template<typename E>
 class queue;    // forward declaration
 template<typename E>
-class node_iterator;  // forward declaration
+class node_iterator; //forward declaration
 
 template<typename E>
 class node {
     E data;
-    node<E> *next;
+    A<node<E> *> next;
 
     node(E d, node<E> *n) : data(d), next(n) {}
 
 public:
-
     friend class queue<E>;         // allow queue<E> to access private members
     friend class node_iterator<E>; // allow node_iterator<E> to access private members
 };
@@ -47,53 +46,65 @@ public:
 
 template<typename E>
 class queue {
-    node<E> *head;
-    node<E> *rear;
-    int _size;
+    A<node<E> *> head;
+    A<node<E> *> rear;
+    A<int> _size;
 public:
     queue() : head(nullptr), rear(nullptr), _size(0) {}
 
     bool empty() const { return _size == 0; }
-    // alternatively we could test for head or rear being equal to nullptr
 
     void enqueue(E d) {
-        auto newNode = new node<E>(d, nullptr);
-        if (rear == nullptr) { // enqueueing the first element
-            head = newNode;
-        } else {
-            rear->next = newNode;
-        }
-        rear = newNode;
-        _size++;
+        A<node<E> *> newNode = new node<E>(d, nullptr);
+
+        ATO
+                            {
+                                if (rear == nullptr) {
+                                    head = newNode;
+                                } else {
+                                    rear.read()->next = newNode;
+                                }
+                                rear = newNode;
+                                _size = _size + 1;
+                            }
+        MIC;
+
     }
 
     E dequeue() {
-        if (empty()) throw "empty queue";
-        node<E> *oldHead = head;
-        head = head->next;
-        if (head == nullptr) rear = nullptr; // removed the last element
-        E e = oldHead->data;
-        delete oldHead;
-        _size--;
-        return e;
+        AWAIT(!empty())
+        {
+            ATO
+                                {
+
+                                    node<E> *oldHead = head;
+                                    head = head.read()->next;
+                                    if (head == nullptr) rear = nullptr;
+                                    E e = oldHead->data;
+                                    _size = _size - 1;
+                                    return e;
+                                }
+            MIC;
+        }
     }
 
     int size() const {
-        return _size;
+        return _size.read();
     }
 
     node_iterator<E> iterator() {
-        return head;
+        return head.read();
     }
 };
 
-const int N = 1000;
+const int N = 10000;
 
 int main() {
     queue<int> q;
 
     {
         processes ps;
+
         ps += [&] {
             for (int i = 0; i < N; ++i) {
                 q.enqueue(1);
@@ -105,6 +116,7 @@ int main() {
             }
         };
     }
+
     alang::logl("Elements enqueued: ", 2 * N);
     alang::logl("Queue size: ", q.size());
 
@@ -115,6 +127,7 @@ int main() {
         ++it;
     }
     alang::logl("Elements in queue: ", ctr);
+    assert(ctr == 2 * N);
 
     alang::logl("---------------");
 
@@ -129,12 +142,14 @@ int main() {
         };
         ps += [&] {
             int c = 0;
+
             for (int i = 0; i < N; ++i) {
                 try {
                     q.dequeue();
                     ++c;
                 } catch (...) {}
             }
+
             successful_dequeues = c;
         };
     }
@@ -151,4 +166,6 @@ int main() {
         ++it;
     }
     alang::logl("Elements in queue: ", ctr);
+
+    assert(ctr == 0);
 }
