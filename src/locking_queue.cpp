@@ -49,43 +49,44 @@ class queue {
     A<node<E> *> head;
     A<node<E> *> rear;
     A<int> _size;
+    mutex myLock;
 public:
-    queue() : head(nullptr), rear(nullptr), _size(0) {}
+    queue() : head(nullptr), rear(nullptr), _size(0), myLock() {}
 
     bool empty() const { return _size == 0; }
 
     void enqueue(E d) {
         A<node<E> *> newNode = new node<E>(d, nullptr);
 
-        ATO
-                            {
-                                if (rear == nullptr) {
-                                    head = newNode;
-                                } else {
-                                    rear.read()->next = newNode;
-                                }
-                                rear = newNode;
-                                _size = _size + 1;
-                            }
-        MIC;
+        while (true) {
+            if (myLock.try_lock()) break;
+        }
 
+        if (rear == nullptr) {
+            head = newNode;
+        } else {
+            rear.read()->next = newNode;
+        }
+        rear = newNode;
+        _size = _size + 1;
+
+        myLock.unlock();
     }
 
     E dequeue() {
-        AWAIT(!empty())
-        {
-            ATO
-                                {
-
-                                    node<E> *oldHead = head;
-                                    head = head.read()->next;
-                                    if (head == nullptr) rear = nullptr;
-                                    E e = oldHead->data;
-                                    _size = _size - 1;
-                                    return e;
-                                }
-            MIC;
+        while (true) {
+            if (myLock.try_lock()) {
+                if (!empty()) break;
+                else myLock.unlock();
+            }
         }
+        node<E> *oldHead = head;
+        head = head.read()->next;
+        if (head == nullptr) rear = nullptr;
+        E e = oldHead->data;
+        _size = _size - 1;
+        myLock.unlock();
+        return e;
     }
 
     int size() const {
@@ -93,7 +94,13 @@ public:
     }
 
     node_iterator<E> iterator() {
-        return head.read();
+        while (true) {
+            if (myLock.try_lock()) break;
+        }
+        auto ret = head.read();
+        myLock.unlock();
+
+        return ret;
     }
 };
 
@@ -132,12 +139,12 @@ int main() {
     alang::logl("---------------");
 
     int successful_dequeues = 0;
-    q = queue<int>(); // a new empty queue
+    queue<int> p;
     {
         processes ps;
         ps += [&] {
             for (int i = 0; i < N; ++i) {
-                q.enqueue(1);
+                p.enqueue(1);
             }
         };
         ps += [&] {
@@ -145,7 +152,7 @@ int main() {
 
             for (int i = 0; i < N; ++i) {
                 try {
-                    q.dequeue();
+                    p.dequeue();
                     ++c;
                 } catch (...) {}
             }
@@ -157,9 +164,9 @@ int main() {
     alang::logl("Elements dequeued: ", N);
     alang::logl("Successful dequeue count: ", successful_dequeues);
 
-    alang::logl("Queue size: ", q.size());
+    alang::logl("Queue size: ", p.size()); //heh p.size()
 
-    it = q.iterator();
+    it = p.iterator();
     ctr = 0;
     while (!it.done()) {
         ++ctr;

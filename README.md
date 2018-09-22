@@ -61,3 +61,11 @@ Which is obvius that it could as we did not make our queue thread safe, and stil
 Ii'l try my very best
 
 ### Task 1:
+Hmmm
+
+### Task 2:
+I did encounter a lot of problems with this, but in the end it turned out to really be solvable
+
+### Task 3:
+To limit the code and changes needed I chose to keep the variables the same, and keep them atomic? with the
+A<> notation.
