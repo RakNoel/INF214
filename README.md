@@ -2,7 +2,7 @@
 Repo for the assignments in INF214
 
 ## Getting stuff to work:
-It was a real hassle getting everything up and running. I'm using Archlinux so setting upp an IDE i could not
+It was a real hassle getting everything up and running. I'm using Arch-linux so setting upp an IDE i could not
 really be bothered with VisualStudio as it is HUGE, slow and overpowered. But I did not wish to use Vim and gcc either.
 
 I eventually went with CLion from my favorite IDE-makers JetBrains as we do get a free student license. This comes
@@ -14,8 +14,8 @@ get me started. I have never used this language ever, and apparently this offers
 but with NO SUPPORT what so ever. Apparently this is top down compiled, so you cannot have the main method at the start.
 
 ### First run:
-You can apparently freely mess arround with pointers, deconstructors and god knows what. I have NO clue what all this
-code does, and googeling gives me a headace. Anyways continuing on. After much back and fourth, I finally made it:
+You can apparently freely mess arround with pointers, deconstructions and god knows what. I have NO clue what all this
+code does, and google-ing gives me a headace. Anyways continuing on. After much back and fourth, I finally made it:
 ```
 /home/raknoel/CLionProjects/INF214/src/cmake-build-debug/INF214
 3412
@@ -54,11 +54,11 @@ Elements in queue: 1993
 
 Process finished with exit code 139 (interrupted by signal 11: SIGSEGV)
 ```
-Which is obvius that it could as we did not make our queue thread safe, and still used it concurrent.
+Which is obvious that it could as we did not make our queue thread safe, and still used it concurrent.
 
 ## Tasks:
 ### Task 0:
-I did try my verry best, and I'm able to imagine it, but I cannot convince myself without the needed evidence.
+I did try my very best, and I'm able to imagine it, but I cannot convince myself without the needed evidence.
 
 ### Task 1:
 Hmmm
