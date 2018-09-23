@@ -61,7 +61,7 @@ Which is obvious that it could as we did not make our queue thread safe, and sti
 I did try my very best, and I'm able to imagine it, but I cannot convince myself without the needed evidence.
 
 ### Task 1:
-Hmmm
+See "Oblig_1_ole006.tex"
 
 ### Task 2:
 I did encounter a lot of problems with this, but in the end it turned out to really be solvable
