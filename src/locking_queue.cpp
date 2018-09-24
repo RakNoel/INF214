@@ -13,15 +13,15 @@ class queue {
     A<node<E> *> head;
     A<node<E> *> rear;
     A<int> _size;
-    semaphore _s = 1;
+    semaphore _semaphore;
 public:
-    queue() : head(nullptr), rear(nullptr), _size(0) {}
+    queue() : head(nullptr), rear(nullptr), _size(0), _semaphore(1) {}
 
     bool empty() const { return _size == 0; }
 
     void enqueue(E d) {
         A<node<E> *> newNode = new node<E>(d, nullptr);
-        _s.P();
+        _semaphore.P();
 
         if (rear == nullptr) {
             head = newNode;
@@ -31,21 +31,21 @@ public:
         rear = newNode;
         _size = _size + 1;
 
-        _s.V();
+        _semaphore.V();
     }
 
     E dequeue() {
         while (true) {
-            _s.P();
+            _semaphore.P();
             if (!empty()) break;
-            else _s.V();
+            else _semaphore.V();
         }
         node<E> *oldHead = head;
         head = head.read()->next;
         if (head == nullptr) rear = nullptr;
         E e = oldHead->data;
         _size = _size - 1;
-        _s.V();
+        _semaphore.V();
         return e;
     }
 
@@ -54,9 +54,9 @@ public:
     }
 
     node_iterator<E> iterator() {
-        _s.P();
+        _semaphore.P();
         auto ret = head.read();
-        _s.V();
+        _semaphore.V();
         return ret;
     }
 };
