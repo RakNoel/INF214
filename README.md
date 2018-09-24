@@ -68,5 +68,8 @@ I did encounter a lot of problems with this, but in the end it turned out to rea
 
 ### Task 3:
 To limit the code and changes needed I chose to keep the variables the same, and keep them atomic? with the
-A<> notation. Since a semaphore is not directly implemented in C++, I chose to use the mutex-lock. Which could
-probably just be replaced by using the "enter/exit _critical" since that's what it looks like A-Lang does.
+A<> notation. Since a semaphore is not directly implemented in C++, One could potentially use the mutex-lock. 
+Which again could probably just be replaced by using the "enter/exit _critical" since that's what it looks like 
+A-Lang does, although since not used in lectures was not intended to be used.
+
+But to do this the right way using semaphores we will implement the A-Lang semaphores.

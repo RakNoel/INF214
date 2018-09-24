@@ -13,18 +13,15 @@ class queue {
     A<node<E> *> head;
     A<node<E> *> rear;
     A<int> _size;
-    mutex myLock;
+    semaphore _s = 1;
 public:
-    queue() : head(nullptr), rear(nullptr), _size(0), myLock() {}
+    queue() : head(nullptr), rear(nullptr), _size(0) {}
 
     bool empty() const { return _size == 0; }
 
     void enqueue(E d) {
         A<node<E> *> newNode = new node<E>(d, nullptr);
-
-        while (true) {
-            if (myLock.try_lock()) break;
-        }
+        _s.P();
 
         if (rear == nullptr) {
             head = newNode;
@@ -34,22 +31,21 @@ public:
         rear = newNode;
         _size = _size + 1;
 
-        myLock.unlock();
+        _s.V();
     }
 
     E dequeue() {
         while (true) {
-            if (myLock.try_lock()) {
-                if (!empty()) break;
-                else myLock.unlock();
-            }
+            _s.P();
+            if (!empty()) break;
+            else _s.V();
         }
         node<E> *oldHead = head;
         head = head.read()->next;
         if (head == nullptr) rear = nullptr;
         E e = oldHead->data;
         _size = _size - 1;
-        myLock.unlock();
+        _s.V();
         return e;
     }
 
@@ -58,17 +54,14 @@ public:
     }
 
     node_iterator<E> iterator() {
-        while (true) {
-            if (myLock.try_lock()) break;
-        }
+        _s.P();
         auto ret = head.read();
-        myLock.unlock();
-
+        _s.V();
         return ret;
     }
 };
 
-const int N = 10000;
+const int N = 1000;
 
 int main() {
     queue<int> q;
