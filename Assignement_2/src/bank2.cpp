@@ -13,6 +13,7 @@ private:
     A<bankAccount> myacc;
     A<int> value;
     A<queue<int>> myqueue;
+    A<int> ticket;
 public:
 
     int deposit(int amount) {
@@ -23,9 +24,11 @@ public:
     int withdraw(int amount) {
         ATO
                             {
-                                AWAIT(myqueue.read().size() < 10)
-                                A<int> ticket = rand() % 100000;
+                                A<int> myTicket = ticket;
+                                ticket = ticket + 1;
+
                                 myqueue.read().push(ticket);
+
                                 AWAIT(value.read() >= amount && myqueue.read().front() == ticket);
                                 value = myacc.read().withdraw(amount);
                                 myqueue.read().pop();
