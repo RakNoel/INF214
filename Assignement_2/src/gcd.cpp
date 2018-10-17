@@ -4,9 +4,6 @@
 
 #include "alang.hpp"
 #include <cassert>
-#include <iostream>
-#include <chrono>
-
 
 using namespace std;
 
@@ -41,6 +38,7 @@ int main() {
         assert(def == gcd(y, x));
         if (x > y) assert(def == gcd(x - y, y)); else assert(def == gcd(y - x, x));
         assert(def <= x && def <= y);
+        assert(x % def == 0 && y % def == 0);
 
     }
 
