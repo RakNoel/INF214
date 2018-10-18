@@ -3,32 +3,53 @@
 //
 
 #include "alang.hpp"
-#include "bankaccount.h"
 
 using namespace std;
 
 
-class myMonitor {
+class bankAccount : monitor {
 private:
-    A<bankAccount> myacc;
-    A<int> value;
+    int amount = 0;
+    cond notBroke;
 public:
 
-    int deposit(int amount) {
-        ATO value = myacc.read().deposit(amount); MIC;
-        return value.read();
+    int deposit(int i) {
+        SYNC;
+        this->amount = this->amount + i;
+        signal_all(notBroke);
+        return this->amount;
     }
 
-    int withdraw(int amount) {
-        ATO
-                            {
-                                AWAIT(value.read() >= amount);
-                                value = myacc.read().withdraw(amount);
-                            };
-        MIC;
-        return value.read();
+    int withdraw(int i) {
+        SYNC;
+        while (amount < i) { wait(notBroke); }
+        this->amount = this->amount - i;
+        signal_all(notBroke);
+        return this->amount;
     }
 };
 
 int main() {
+    bankAccount account;
+    processes ps;
+
+    for (int i : range(0, 10)) {
+
+        alang::ignore(i);
+
+        ps += [&] {
+            account.withdraw(200);
+        };
+    }
+    for (int i : range(0, 20)) {
+
+        alang::ignore(i);
+
+        ps += [&] {
+
+            account.deposit(100);
+
+        };
+
+    }
 }

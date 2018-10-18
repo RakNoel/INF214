@@ -1,42 +1,72 @@
 //
 // Created by raknoel on 17.10.18.
 //
-#include <queue>
+
 #include "alang.hpp"
-#include "bankaccount.h"
 
 using namespace std;
 
 
-class myMonitor {
+class bankAccount : monitor {
 private:
-    A<bankAccount> myacc;
-    A<int> value;
-    A<queue<int>> myqueue;
-    A<int> ticket;
+    int amount = 0;
+    int ticket = 0;
+    int next = 0;
+    cond notBroke;
 public:
 
-    int deposit(int amount) {
-        ATO value = myacc.read().deposit(amount); MIC;
-        return value.read();
+    int deposit(int i) {
+        SYNC;
+        amount = amount + i;
+        cout << "Deposited: " << i << " balance: " << amount << endl;
+        signal_all(notBroke);
+        return amount;
     }
 
-    int withdraw(int amount) {
-        ATO
-                            {
-                                A<int> myTicket = ticket;
-                                ticket = ticket + 1;
-
-                                myqueue.read().push(ticket);
-
-                                AWAIT(value.read() >= amount && myqueue.read().front() == ticket);
-                                value = myacc.read().withdraw(amount);
-                                myqueue.read().pop();
-                            };
-        MIC;
-        return value.read();
+    int withdraw(int i) {
+        SYNC;
+        int thisTicket = ticket++;
+        cout << "Waiting with ticket: " << thisTicket << endl;
+        while (amount < i || next != thisTicket) { wait(notBroke); }
+        amount = amount - i;
+        cout << "Withdrew: " << i << " balance: " << amount << " next: " << ++next << endl;
+        signal_all(notBroke);
+        return amount;
     }
 };
 
 int main() {
+    bankAccount account;
+
+    {
+        processes ps;
+        for (int i : range(0, 10)) {
+
+            alang::ignore(i);
+
+            ps += [&] {
+                account.withdraw(300);
+            };
+        }
+
+        for (int i : range(0, 20)) {
+
+            alang::ignore(i);
+
+            ps += [&] {
+                account.withdraw(100);
+            };
+        }
+        for (int i : range(0, 50)) {
+
+            alang::ignore(i);
+
+            ps += [&] {
+
+                account.deposit(100);
+
+            };
+
+        }
+    }
 }
